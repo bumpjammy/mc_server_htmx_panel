@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script src="https://unpkg.com/htmx.org@1.9.4"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/sse.js"></script>
+    <title>Server Control</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <button hx-post="/start_server" hx-target="#console" hx-swap="innerHTML">Start Server</button>
+    <button hx-post="/stop_server" hx-target="#console" hx-swap="innerHTML">Stop Server</button>
+    <div hx-ext="sse" sse-connect="/get_console" sse-swap="message" class="console">
+        Contents of this box will be updated in real time
+        with every SSE message received from the chatroom.
+    </div>
+    <form hx-post="/send_command" hx-swap="innerHTML" autocomplete="off">
+        <input type="text" name="command" placeholder="Command" />
+        <input type="submit" value="Send" />
+    </form>
+    <p id="console"></p>
+</body>
+</html>

@@ -1,0 +1,51 @@
+body {
+    background-color: #33404d;
+}
+
+h1, h2, h3, h4, h5, h6, p, a {
+    color: #ffffff;
+    font-family: "Arial", sans-serif;
+}
+
+input[type=text], input[type=password] {
+    width: 30%;
+    padding: 12px 20px;
+    margin: 20px 10px;
+    box-sizing: border-box;
+    font-family: "Arial", sans-serif;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 10px 10px;
+    font-family: "Arial", sans-serif;
+    cursor: pointer;
+    border: none;
+}
+
+input[type=submit] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 10px 0;
+    font-family: "Arial", sans-serif;
+    border: none;
+    cursor: pointer;
+}
+
+.console {
+    background-color: #404755;
+    overflow: scroll;
+    height: 70vh;
+    width: 80%;
+    border: 5px solid #4CAF50;
+    padding: 10px;
+    margin: 10px;
+    /* auto scroll to bottom */
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    display: flex;
+    flex-direction: column-reverse;
+}
