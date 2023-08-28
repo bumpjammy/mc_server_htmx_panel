@@ -7,22 +7,6 @@ use crate::server;
 use crate::state::{ConsoleState, ServerState};
 use rocket::tokio::time;
 
-#[get("/")]
-pub(crate) async fn index() -> NamedFile {
-    if !std::path::Path::new("webpages").exists() {
-        std::env::set_current_dir("..").expect("Failed to go up a directory");
-    }
-    NamedFile::open("webpages/index.html").await.expect("Failed to open index.html")
-}
-
-#[get("/style.css")]
-pub(crate) async fn style() -> NamedFile {
-    if !std::path::Path::new("webpages").exists() {
-        std::env::set_current_dir("..").expect("Failed to go up a directory");
-    }
-    NamedFile::open("webpages/style.css").await.expect("Failed to open style.css")
-}
-
 #[get("/get_console")] // Go to link for infinite download lul
 pub(crate) fn get_console(state: &State<ConsoleState>) -> EventStream![Event + '_] {
     EventStream! {

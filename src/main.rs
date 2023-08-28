@@ -6,6 +6,7 @@ use std::sync::Arc;
 use rocket::{launch, routes};
 use rocket::config::LogLevel::Critical;
 use std::sync::Mutex;
+use rocket::fs::FileServer;
 
 #[launch]
 fn rocket() -> _ {
@@ -23,13 +24,12 @@ fn rocket() -> _ {
     rocket::custom(config)
         .manage(console_state)
         .manage(server_state)
-        .mount("/", routes![
+        .mount("/", FileServer::from("webpages/"))
+        .mount("/api/", routes![
             web_requests::get_console,
             web_requests::send_command,
             web_requests::start_server,
             web_requests::stop_server,
             web_requests::kill_server,
-            web_requests::style,
-            web_requests::index,
         ])
 }
