@@ -1,6 +1,5 @@
 use std::ops::Deref;
 use percent_encoding::percent_decode_str;
-use rocket::fs::NamedFile;
 use rocket::{get, post, State};
 use rocket::response::stream::{Event, EventStream};
 use crate::server;
