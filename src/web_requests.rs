@@ -50,7 +50,7 @@ pub(crate) fn send_command(state: &State<ConsoleState>, command: String) -> Stri
     input.push_str(formatted_command);
     input.push('\n');
     let mut result = String::new();
-    result.push_str("<input type=\"text\" name=\"command\" placeholder=\"Command\" />"); // Escape characters go brrrr
+    result.push_str("<input type=\"text\" name=\"command\" placeholder=\"Command\" autofocus onfocus=\"this.select()\"/>"); // Escape characters go brrrr
     result.push_str("<input type=\"submit\" value=\"Send\" />");
     result
 }
