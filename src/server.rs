@@ -1,19 +1,19 @@
+use std::env;
 use std::process::Child;
 use std::io::{BufRead, Result, Write};
 use std::sync::{Arc, Mutex};
 
 fn create_child_server_process() -> Result<Child> {
-    if !std::path::Path::new("server").exists() {
-        std::env::set_current_dir("..").expect("Failed to go up a directory");
-    }
-    std::env::set_current_dir("server")?;
-    std::process::Command::new("java")
+    env::set_current_dir("server")?;
+    let child = std::process::Command::new("java")
         .arg("-jar")
         .arg("server.jar")
         .arg("--nogui")
         .stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())
-        .spawn()
+        .spawn();
+    env::set_current_dir("..")?;
+    return child;
 }
 
 pub(crate) fn start_server(logs: Arc<Mutex<Vec<String>>>, input: Arc<Mutex<String>>, child: Arc<Mutex<Option<Child>>>) {
