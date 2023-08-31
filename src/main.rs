@@ -27,6 +27,7 @@ fn rocket() -> _ {
         .mount("/", FileServer::from("webpages/"))
         .mount("/api/", routes![
             web_requests::get_console,
+            web_requests::get_servers,
             web_requests::send_command,
             web_requests::start_server,
             web_requests::stop_server,

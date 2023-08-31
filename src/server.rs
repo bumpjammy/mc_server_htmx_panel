@@ -3,8 +3,9 @@ use std::process::Child;
 use std::io::{BufRead, Result, Write};
 use std::sync::{Arc, Mutex};
 
-fn create_child_server_process() -> Result<Child> {
-    env::set_current_dir("server")?;
+fn create_child_server_process(server_location: String) -> Result<Child> {
+    println!("{}", server_location);
+    env::set_current_dir(format!("server/{}", server_location))?;
     let child = std::process::Command::new("java")
         .arg("-jar")
         .arg("server.jar")
@@ -12,14 +13,14 @@ fn create_child_server_process() -> Result<Child> {
         .stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())
         .spawn();
-    env::set_current_dir("..")?;
+    env::set_current_dir("../..")?;
     return child;
 }
 
-pub(crate) fn start_server(logs: Arc<Mutex<Vec<String>>>, input: Arc<Mutex<String>>, child: Arc<Mutex<Option<Child>>>) {
+pub(crate) fn start_server(logs: Arc<Mutex<Vec<String>>>, input: Arc<Mutex<String>>, child: Arc<Mutex<Option<Child>>>, server_location: String) {
     logs.lock().unwrap().clear();
     input.lock().unwrap().clear();
-    let new_child = create_child_server_process().expect("Failed to start server");
+    let new_child = create_child_server_process(server_location).expect("Failed to start server");
     *child.lock().unwrap() = Some(new_child);
 
     let child_clone = child.clone();

@@ -1,3 +1,4 @@
+use std::{env, fs};
 use std::ops::Deref;
 use percent_encoding::percent_decode_str;
 use rocket::{get, post, State};
@@ -38,22 +39,55 @@ pub(crate) fn send_command(state: &State<ConsoleState>, command: String) -> Stri
     result
 }
 
-#[post("/start_server")]
-pub(crate) fn start_server(server_state: &State<ServerState>, console_state: &State<ConsoleState>) -> Result<(), String> {
+#[post("/start_server", data= "<server_location>")]
+pub(crate) fn start_server(server_state: &State<ServerState>, console_state: &State<ConsoleState>, mut server_location: String) -> Result<(), String> {
     match server_state.child.lock().unwrap().as_ref() {
         Some(_) => {
             return Err("Server already running".to_string());
         },
         None => {},
     }
+    server_location = server_location.strip_prefix("loc=").expect("Invalid data").to_string();
+    if server_location.contains("..") {
+        return Err("No directory traversal for you".to_string());
+    }
     println!("Starting");
     let logs_clone = console_state.logs.clone();
     let input_clone = console_state.input.clone();
     let child_clone = server_state.child.clone();
     std::thread::spawn(move || {
-        server::start_server(logs_clone, input_clone, child_clone);
+        server::start_server(logs_clone, input_clone, child_clone, server_location.to_string());
     });
     Ok(())
+}
+
+#[get("/get_servers")]
+pub(crate) fn get_servers() -> String {
+    env::set_current_dir("server").expect("No server folder");
+    let paths = fs::read_dir("./").unwrap();
+    let dirs = paths
+        .filter_map(|e| {
+            e.ok().and_then(|d| {
+                let p = d.path();
+                if p.is_dir() {
+                    Some(p)
+                } else {
+                    None
+                }
+            })
+        });
+    let mut result = String::new();
+    for dir in dirs {
+        let dir_path = dir.strip_prefix("./").unwrap().to_str().unwrap();
+        let new_option = format!(
+            "<option value=\"{}\">{}</option>",
+            dir_path,
+            dir_path,
+        );
+        result.push_str(new_option.as_str());
+    }
+    env::set_current_dir("..").expect("what");
+    result
 }
 
 #[post("/stop_server")]

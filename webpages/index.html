@@ -9,16 +9,18 @@
 </head>
 
 <body>
-    <button hx-post="/api/start_server" hx-target="#console" hx-swap="innerHTML">Start Server</button>
-    <button hx-post="/api/stop_server" hx-target="#console" hx-swap="innerHTML">Stop Server</button>
-    <div hx-ext="sse" sse-connect="/api/get_console" sse-swap="message" class="console">
-        Contents of this box will be updated in real time
-        with every SSE message received from the chatroom.
-    </div>
+    <form hx-post="/api/start_server" hx-swap="none">
+        <button id="startButton">Start Server</button>
+        <button hx-post="/api/stop_server">Stop Server</button>
+        <select hx-get="/api/get_servers" hx-swap="innerHTML" hx-trigger="load" name="loc" id="loc">
+        </select>
+    </form>
+
+    <div hx-ext="sse" sse-connect="/api/get_console" sse-swap="message" class="console"></div>
+
     <form hx-post="/api/send_command" hx-swap="innerHTML" autocomplete="off">
         <input type="text" name="command" placeholder="Command" autofocus onfocus="this.select()"/>
         <input type="submit" value="Send" />
     </form>
-    <p id="console"></p>
 </body>
 </html>
